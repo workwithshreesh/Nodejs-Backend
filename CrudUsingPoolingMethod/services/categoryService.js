@@ -1,13 +1,25 @@
 const categoryModel = require("../models/categoryModel")
 
-const getAllCategory = async () => {
+const getTotalcount = async () =>{
+    try{
+
+        const total = categoryModel.tostalCategory();
+        return total;
+
+    }catch (err) {
+        console.log(err,()=>console.log("Error in total count"))
+    }
+}
+
+const getAllCategory = async (page) => {
     try {
-        const rows = categoryModel.getAllCategory();
+        const rows = await categoryModel.getAllCategory(page);
         return rows;
     } catch (error) {
         console.error("Error fetching categories from DB:", error);
         throw error;
     }
+
 };
 
 
@@ -79,4 +91,5 @@ module.exports = {
     putCategory,
     deleteCategory,
     TruncateData,
+    getTotalcount,
 };

@@ -1,9 +1,20 @@
 // productsService.js (or wherever you handle the products logic)
 const promisePool = require("../utils/dbConnection");
 
-const getAllproducts = async () => {
+const tostalProduct = async () =>{
+    const limit = 10
+    const countQuery = `SELECT COUNT(*) AS total FROM products`;
+    const [countResult] = await promisePool.execute(countQuery);
+    const totalRecords = countResult[0].total;
+    return Math.ceil(totalRecords/limit)
+}
+
+
+const getAllproducts = async (page) => {
     try {
-        const [rows] = await promisePool.execute("SELECT * FROM products");
+        const limit = "10";
+        const offset = (page - 1) * parseInt(limit);
+        const [rows] = await promisePool.execute("SELECT * FROM products LIMIT ? OFFSET ?",[limit, String(offset)]);
         return rows; 
     } catch (error) {
         console.error("Error fetching products:", error);
@@ -84,5 +95,6 @@ module.exports = {
     postproducts,
     putproducts,
     deleteproducts,
-    TruncateData
+    TruncateData,
+    tostalProduct
 };

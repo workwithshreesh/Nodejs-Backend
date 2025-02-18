@@ -2,12 +2,21 @@ const categorySevice = require("../services/categoryService");
 
 const getcategories = async (req,res) =>{
     try {
-        const categories = await categorySevice.getAllCategory();
+        const page = parseInt(req.query.page) || 1;
+
+        const categories = await categorySevice.getAllCategory(page);
+        const totalCount = await categorySevice.getTotalcount();
+
         if (!categories || categories.length === 0) {
-          return res.status(404).json({ message: "No categories found" });
+            return res.status(404).json({ message: "No categories found" });
         }
-        res.status(200).json(categories);
-      } catch (error) {
+
+        res.status(200).json({
+            categories,
+            totalCount, 
+            currentPage: page,
+        });
+    } catch (error) {
         console.error("Error in getcategories:", error);
         res.status(500).json({ message: "Error fetching categories", error: error.message });
       }

@@ -2,11 +2,18 @@ const ProductsSevice = require("../services/productService");
 
 const getProducts = async (req,res) =>{
     try {
-        const Products = await ProductsSevice.getAllProducts();
+        const page = parseInt(req.query.page) || 1;
+        
+        const Products = await ProductsSevice.getAllProducts(page);
+        const totalCount = await ProductsSevice.getTotalcount()
         if (!Products || Products.length === 0) {
           return res.status(404).json({ message: "No Products found" });
         }
-        res.status(200).json(Products);
+        res.status(200).json({
+            Products,
+            totalCount, 
+            currentPage: page,
+        });
       } catch (error) {
         console.error("Error in getProducts:", error);
         res.status(500).json({ message: "Error fetching Products", error: error.message });

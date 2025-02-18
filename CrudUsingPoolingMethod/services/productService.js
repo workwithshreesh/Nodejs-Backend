@@ -6,9 +6,20 @@ const ProductsModel = require("../models/productModel")
 //     deleteproducts,
 //     TruncateData
 
-const getAllProducts = async () => {
+const getTotalcount = async () =>{
+    try{
+
+        const total = ProductsModel.tostalProduct();
+        return total;
+
+    }catch (err) {
+        console.log(err,()=>console.log("Error in total count"))
+    }
+}
+
+const getAllProducts = async (page) => {
     try {
-        const rows = ProductsModel.getAllproducts();
+        const rows = ProductsModel.getAllproducts(page);
         return rows;
     } catch (error) {
         console.error("Error fetching Products from DB:", error);
@@ -85,4 +96,5 @@ module.exports = {
     putProducts,
     deleteProducts,
     TruncateData,
+    getTotalcount
 };

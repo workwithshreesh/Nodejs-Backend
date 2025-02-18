@@ -1,15 +1,29 @@
 // categoryService.js (or wherever you handle the category logic)
 const promisePool = require("../utils/dbConnection");
 
-const getAllCategory = async () => {
+const tostalCategory = async () =>{
+    const limit = 10;
+    const countQuery = `SELECT COUNT(*) AS total FROM Categories`;
+    const [countResult] = await promisePool.execute(countQuery);
+    const totalRecords = countResult[0].total;
+    return  Math.ceil(totalRecords/limit)
+
+}
+
+const getAllCategory = async (page) => {
     try {
-        const [rows] = await promisePool.execute("SELECT * FROM categories");
+        const limit = "10";
+        const offset = (page - 1) * parseInt(limit);
+          
+        const [rows] = await promisePool.execute("SELECT * FROM categories LIMIT ? OFFSET ?",[limit, offset.toString()]);
         return rows; 
     } catch (error) {
         console.error("Error fetching categories:", error);
         throw error; 
     }
 };
+
+
 
 
 const postCategory = async (name) => {
@@ -69,5 +83,6 @@ module.exports = {
     postCategory,
     putCategory,
     deleteCategory,
-    TruncateData
+    TruncateData,
+    tostalCategory
 };
