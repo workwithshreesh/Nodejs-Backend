@@ -3,7 +3,17 @@ const appConfig = require("./config/app.config");
 const dbConfig = require("./config/db.config");
 const Categoryrouter = require("./route/categoryRoute")
 const Productrouter = require("./route/productRoute");
-const app = express()
+const cors = require('cors');
+
+const app = express();
+
+const corsOptions = {
+    origin: 'http://localhost:4200', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+    allowedHeaders: ['Content-Type', 'Authorization'], 
+  };
+  
+  app.use(cors(corsOptions));
 
 app.use(express.json())
 app.use("/category",Categoryrouter);

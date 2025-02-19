@@ -14,7 +14,9 @@ const getAllproducts = async (page) => {
     try {
         const limit = "10";
         const offset = (page - 1) * parseInt(limit);
-        const [rows] = await promisePool.execute("SELECT * FROM products LIMIT ? OFFSET ?",[limit, String(offset)]);
+        const [rows] = await promisePool.execute(  
+            "SELECT p.id, p.name, p.price, p.created_at, p.updated_at, p.category_id ,c.name as category_name  FROM products p JOIN categories c ON p.category_id = c.id LIMIT ? OFFSET ?",
+            [limit, String(offset)]);
         return rows; 
     } catch (error) {
         console.error("Error fetching products:", error);

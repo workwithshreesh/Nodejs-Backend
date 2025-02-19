@@ -3,7 +3,7 @@ const promisePool = require("../utils/dbConnection");
 
 const tostalCategory = async () =>{
     const limit = 10;
-    const countQuery = `SELECT COUNT(*) AS total FROM Categories`;
+    const countQuery = `SELECT COUNT(*) AS total FROM categories`;
     const [countResult] = await promisePool.execute(countQuery);
     const totalRecords = countResult[0].total;
     return  Math.ceil(totalRecords/limit)
