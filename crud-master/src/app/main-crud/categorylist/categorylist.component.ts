@@ -5,6 +5,7 @@ import { HandleCategoryApiService } from '../../services/handle-category-api.ser
 import { Subscription } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
+
 @Component({
   selector: 'app-categorylist',
   imports: [CommonModule, ReactiveFormsModule],
@@ -16,12 +17,15 @@ export class CategorylistComponent implements OnInit, OnDestroy {
   @ViewChild('modalContent') modalContent:any;
 
   AlldataSubscribe!:Subscription;
-  PostDataSubscribe!:Subscription
+  PostDataSubscribe!:Subscription;
+  PutDataSubscribe!:Subscription;
+  deleteDataSubscribe!:Subscription;
   FormsData!:FormGroup;
   modalRefrence:any;
 
   AllData:any;
-  EditData:any;
+  EditData:boolean = false;
+  editId:any;
   totalPages:any;
   currentPage = 1;
   headers: string[] = [];
@@ -29,8 +33,7 @@ export class CategorylistComponent implements OnInit, OnDestroy {
   constructor(
     private fb:FormBuilder,
     private apiData:HandleCategoryApiService,
-    private modalService: NgbModal 
-
+    private modalService: NgbModal,
     ){}
 
   ngOnInit(): void {
@@ -48,10 +51,40 @@ export class CategorylistComponent implements OnInit, OnDestroy {
     if (this.AlldataSubscribe) {
       this.AlldataSubscribe.unsubscribe(); 
     }
+    if(this.PostDataSubscribe){
+      this.PostDataSubscribe.unsubscribe();
+    }
+    if(this.PutDataSubscribe){
+      this.PutDataSubscribe.unsubscribe();
+    }
+    if(this.deleteDataSubscribe){
+      this.deleteDataSubscribe.unsubscribe();
+    }
   }
 
   open(): void {
-   this.modalRefrence =  this.modalService.open(this.modalContent); 
+   this.EditData = false
+   this.FormsData.reset()
+   this.modalRefrence =  this.modalService.open(this.modalContent);
+  }
+
+  openEdit(data:any): void {
+    this.modalRefrence = this.modalService.open(this.modalContent)
+    this.EditData = true;
+    if(this.EditData){
+      this.FormsData.patchValue({
+        name: data.name
+      });
+      this.editId = data.id
+    }
+  }
+
+
+  openDelete(data:any){
+    this.apiData.deleteDataCategory(data.id).subscribe(data=>{
+      console.log(data)
+    });
+    window.location.reload()
   }
   
 
@@ -61,11 +94,23 @@ export class CategorylistComponent implements OnInit, OnDestroy {
     this.PostDataSubscribe = this.apiData.postCategoryData(data).subscribe(data=>{
       console.log(data)
     });
-    this.modalRefrence.close()
     
+    this.modalRefrence.close()
+    this.FormsData.reset();
+    window.location.reload()
+
   }
 
   editChanges(): void {
+    const formValue = this.FormsData.value
+    this.PutDataSubscribe = this.apiData.putCategoryData(this.editId,formValue).subscribe(data=>{
+      console.log(data);
+    });
+    this.modalRefrence.close()
+    this.FormsData.reset()
+    this.EditData = false;
+    this.editId = null;
+    window.location.reload()
 
   }
 

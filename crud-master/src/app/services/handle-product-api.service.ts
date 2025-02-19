@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class HandleProductApiService {
 
+  private BaseCat_URL = "http://localhost:8000/category/get-all-category"
   private Base_URL = "http://localhost:8000/product/get-all-product"
   private Edit_URL = "http://localhost:8000/product/edit-product/"
   private Delete_URL = "http://localhost:8000/product/delete-product/"
@@ -15,8 +16,9 @@ export class HandleProductApiService {
 
   constructor(private http:HttpClient) { }
 
-  getProductData():Observable<any>{
-    return this.http.get<any>(this.Base_URL)
+  getProductData(page:number):Observable<any>{
+    const params = new HttpParams().set('page', page.toString());
+    return this.http.get<any>(this.Base_URL,{ params })
   }
 
   postProductData(data:any):Observable<any>{
@@ -34,5 +36,12 @@ export class HandleProductApiService {
   truncateProductData():Observable<any>{
     return this.http.delete<any>(this.Truncate_URL)
   }
+
+
+
+  getCategoryData():Observable<any>{
+    return this.http.get<any>(this.BaseCat_URL);
+  }
+
 
 }
