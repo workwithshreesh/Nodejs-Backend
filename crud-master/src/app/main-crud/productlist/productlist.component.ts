@@ -71,8 +71,8 @@ export class ProductlistComponent implements OnInit, OnDestroy{
   }
 
   open(): void {
-   this.EditData = false
-   this.FormsData.reset()
+   this.EditData = false;
+   this.FormsData.reset();
    this.modalRefrence =  this.modalService.open(this.modalContent);
   }
 
